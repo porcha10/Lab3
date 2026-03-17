@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
 /**
- * Basic Arithmetic Calculator CLI
+ * Advanced Arithmetic Calculator CLI
  * 
  * Supported Operations:
  * - Addition: Add two or more numbers
  * - Subtraction: Subtract numbers from a given value
  * - Multiplication: Multiply two or more numbers
  * - Division: Divide numbers with error handling for division by zero
+ * - Modulo: Calculate remainder of division
+ * - Power: Raise a base to an exponent
+ * - Square Root: Calculate square root of a number
  */
 
 const readline = require('readline');
@@ -60,17 +63,55 @@ function divide(dividend, divisor) {
 }
 
 /**
+ * Modulo operation
+ * @param {number} a - The dividend
+ * @param {number} b - The divisor
+ * @returns {number|string} Remainder of a divided by b or error message
+ */
+function modulo(a, b) {
+  if (b === 0) {
+    return 'Error: Modulo by zero is not allowed';
+  }
+  return a % b;
+}
+
+/**
+ * Power operation (exponentiation)
+ * @param {number} base - The base number
+ * @param {number} exponent - The exponent
+ * @returns {number} Result of base raised to the exponent
+ */
+function power(base, exponent) {
+  return Math.pow(base, exponent);
+}
+
+/**
+ * Square root operation
+ * @param {number} n - The number to find the square root of
+ * @returns {number|string} Square root of n or error message
+ */
+function squareRoot(n) {
+  if (n < 0) {
+    return 'Error: Cannot calculate square root of negative numbers';
+  }
+  return Math.sqrt(n);
+}
+
+/**
  * Display welcome message and menu
  */
 function displayMenu() {
-  console.log('\n=== Basic Arithmetic Calculator ===');
+  console.log('\n=== Advanced Arithmetic Calculator ===');
   console.log('Choose an operation:');
   console.log('1. Addition (+)');
   console.log('2. Subtraction (-)');
   console.log('3. Multiplication (*)');
   console.log('4. Division (/)');
-  console.log('5. Exit');
-  console.log('=====================================\n');
+  console.log('5. Modulo (%)');
+  console.log('6. Power (^)');
+  console.log('7. Square Root (√)');
+  console.log('8. Exit');
+  console.log('========================================\n');
 }
 
 /**
@@ -112,7 +153,7 @@ async function runCalculator() {
     displayMenu();
 
     const choice = await new Promise((resolve) => {
-      rl.question('Enter your choice (1-5): ', resolve);
+      rl.question('Enter your choice (1-8): ', resolve);
     });
 
     let result;
@@ -147,13 +188,34 @@ async function runCalculator() {
       }
 
       case '5': {
+        const numbers = await getNumbers('modulo', 2);
+        result = modulo(numbers[0], numbers[1]);
+        console.log(`\nResult: ${numbers[0]} % ${numbers[1]} = ${result}\n`);
+        break;
+      }
+
+      case '6': {
+        const numbers = await getNumbers('power', 2);
+        result = power(numbers[0], numbers[1]);
+        console.log(`\nResult: ${numbers[0]} ^ ${numbers[1]} = ${result}\n`);
+        break;
+      }
+
+      case '7': {
+        const numbers = await getNumbers('square root', 1);
+        result = squareRoot(numbers[0]);
+        console.log(`\nResult: √${numbers[0]} = ${result}\n`);
+        break;
+      }
+
+      case '8': {
         console.log('\nThank you for using the Calculator. Goodbye!\n');
         running = false;
         break;
       }
 
       default: {
-        console.log('\nInvalid choice. Please enter a number between 1 and 5.\n');
+        console.log('\nInvalid choice. Please enter a number between 1 and 8.\n');
       }
     }
   }
@@ -167,6 +229,9 @@ module.exports = {
   subtract,
   multiply,
   divide,
+  modulo,
+  power,
+  squareRoot,
 };
 
 // Start the calculator only if running directly
